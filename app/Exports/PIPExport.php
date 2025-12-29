@@ -3,63 +3,78 @@
 namespace App\Exports;
 
 use App\Models\Pip;
-use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\ShouldQueue;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Concerns\Exportable;
 
-class PIPExport implements FromCollection, WithHeadings
+class PIPExport implements
+    FromQuery,
+    WithHeadings,
+    WithChunkReading,
+    ShouldQueue
 {
-    public function collection()
+    use Exportable;
+
+    public function query()
     {
-        return Pip::select([
-            'pdid',
-            'nama_siswa',
-            'nama_sekolah',
-            'provinsi',
-            'kabupaten',
-            'kecamatan',
-            'nik',
-            'nisn',
-            'npsn',
-            'kelas',
-            'rombel',
-            'semester',
-            'jenjang',
-            'bentuk',
-            'jenis_kelamin',
-            'tempat_lahir',
-            'tanggal_lahir',
-            'nama_ayah',
-            'nama_ibu',
-            'nominal',
-            'tipe_sk',
-            'nomor_sk',
-            'nomor_sk_nominasi',
-            'tanggal_sk',
-            'tanggal_sk_nominasi',
-            'tahap',
-            'tahap_nominasi',
-            'virtual_account',
-            'virtual_account_nominasi',
-            'no_rekening',
-            'bank',
-            'tanggal_aktifasi',
-            'tanggal_mulai_pencairan',
-            'tanggal_cair',
-            'no_kip',
-            'no_kks',
-            'no_kps',
-            'no_pkh',
-            'layak_pip',
-            'nama_pengusul',
-            'nama_pengusul_utama',
-            'fase',
-            'keterangan_tahap',
-            'keterangan_pencairan',
-            'keterangan_tambahan',
-            'status',
-        ])
-        ->orderBy('nama_siswa')
-        ->get();
+        return Pip::query()
+            ->select([
+                'pdid',
+                'nama_siswa',
+                'nama_sekolah',
+                'provinsi',
+                'kabupaten',
+                'kecamatan',
+                'nik',
+                'nisn',
+                'npsn',
+                'kelas',
+                'rombel',
+                'semester',
+                'jenjang',
+                'bentuk',
+                'jenis_kelamin',
+                'tempat_lahir',
+                'tanggal_lahir',
+                'nama_ayah',
+                'nama_ibu',
+                'nominal',
+                'tipe_sk',
+                'nomor_sk',
+                'nomor_sk',
+                'nomor_sk_nominasi',
+                'tanggal_sk',
+                'tanggal_sk_nominasi',
+                'tahap',
+                'tahap_nominasi',
+                'virtual_account',
+                'virtual_account_nominasi',
+                'no_rekening',
+                'bank',
+                'tanggal_aktifasi',
+                'tanggal_mulai_pencairan',
+                'tanggal_cair',
+                'no_kip',
+                'no_kks',
+                'no_kps',
+                'no_pkh',
+                'layak_pip',
+                'nama_pengusul',
+                'nama_pengusul_utama',
+                'fase',
+                'keterangan_tahap',
+                'keterangan_pencairan',
+                'keterangan_tambahan',
+                'status',
+            ])
+            ->orderBy('nama_siswa');
+    }
+
+    public function chunkSize(): int
+    {
+        return 1000;
     }
 
     public function headings(): array
@@ -76,7 +91,7 @@ class PIPExport implements FromCollection, WithHeadings
             'NPSN',
             'Kelas',
             'Rombel',
-            'Semeter', // ikuti Excel
+            'Semeter',
             'Jenjang',
             'Bentuk',
             'JK',

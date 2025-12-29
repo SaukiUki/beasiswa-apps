@@ -10,6 +10,7 @@ use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Tables\Filters\SelectFilter;
 use App\Filament\Resources\PipResource\Pages;
+use Illuminate\Database\Eloquent\Builder;
 
 class PipResource extends Resource
 {
@@ -97,6 +98,22 @@ class PipResource extends Resource
 }
 
 
+
+public static function getEloquentQuery(): Builder
+{
+    return parent::getEloquentQuery()
+        ->select([
+            'id',
+            'nisn',
+            'nama_siswa',
+            'nama_sekolah',
+            'kabupaten',
+            'nominal',
+            'tanggal_cair',
+            'status',
+        ]);
+}
+
     /* =========================================================
      * TABLE
      * ========================================================= */
@@ -105,8 +122,8 @@ class PipResource extends Resource
     return $table
         ->columns([
             Tables\Columns\TextColumn::make('nisn')->label('NISN')->searchable()->sortable(),
-            Tables\Columns\TextColumn::make('nama_siswa')->searchable(),
-            Tables\Columns\TextColumn::make('nama_sekolah')->searchable(),
+            Tables\Columns\TextColumn::make('nama_siswa'),
+            Tables\Columns\TextColumn::make('nama_sekolah'),
             Tables\Columns\TextColumn::make('kabupaten')->label('Kabupaten'),
             Tables\Columns\TextColumn::make('nominal')->money('IDR', true)->sortable(),
             Tables\Columns\TextColumn::make('tanggal_cair')->date('d M Y')->sortable(),
@@ -117,11 +134,26 @@ class PipResource extends Resource
                 ]),
         ])
         ->filters([
-            SelectFilter::make('status')->options([
-                'aktif' => 'Aktif',
-                'tidak aktif' => 'Tidak Aktif',
-            ]),
+            SelectFilter::make('status')
+                ->options([
+                    'aktif' => 'Aktif',
+                    'tidak aktif' => 'Tidak Aktif',
+                ]),
+
+            Tables\Filters\Filter::make('nisn_prefix')
+                ->form([
+                    Forms\Components\TextInput::make('nisn')
+                        ->label('NISN diawali'),
+                ])
+                ->query(fn ($query, $data) =>
+                    filled($data['nisn'])
+                        ? $query->where('nisn', 'like', $data['nisn'].'%')
+                        : $query
+                ),
         ])
+
+        ->defaultPaginationPageOption(25)
+        ->paginationPageOptions([25, 50])
         ->actions([
             Tables\Actions\ViewAction::make(),
             Tables\Actions\EditAction::make(),
