@@ -22,7 +22,6 @@ class GuruResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-user-plus';
     protected static ?string $label = 'DAFTAR GURU/DOSEN';
-    protected static ?string $navigationGroup = 'DATA PENDIDIKAN';
     protected static ?string $recordTitleAttribute = 'nama_guru';
 
     public static function form(Form $form): Form
@@ -127,6 +126,11 @@ class GuruResource extends Resource
         ];
     }
 
+            public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
+    
     public static function getPages(): array
     {
         return [

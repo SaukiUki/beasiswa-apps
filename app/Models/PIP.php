@@ -3,24 +3,30 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Siswa;
+use Filament\Forms\Set;
 
 class PIP extends Model
 {
+    use HasFactory;
 
-    // (Opsional) Jika nama tabel bukan jamak dari nama model
-    // protected $table = 'pips';
+    /**
+     * Nama tabel (karena tidak mengikuti konvensi Laravel)
+     */
+    protected $table = 'p_i_p_s';
 
-    // Daftar kolom yang dapat diisi massal (dari form atau seeder)
+    /**
+     * Kolom yang boleh diisi mass assignment
+     */
     protected $fillable = [
-        'nik',
-        'pengusul',
-        'pdid',
+         'pdid',
         'nama_siswa',
         'nama_sekolah',
         'provinsi',
         'kabupaten',
         'kecamatan',
-        'nik2',
+        'nik',
         'nisn',
         'npsn',
         'kelas',
@@ -60,18 +66,31 @@ class PIP extends Model
         'keterangan_pencairan',
         'keterangan_tambahan',
         'status',
-        'status2',
-        'no_hp',
-        'rekomendasi',
     ];
 
-    // Jika ingin konversi otomatis tanggal
+    /**
+     * Casting tipe data
+     */
     protected $casts = [
-        'tanggal_lahir' => 'date',
+                'tanggal_lahir' => 'date',
         'tanggal_sk' => 'date',
         'tanggal_sk_nominasi' => 'date',
         'tanggal_aktifasi' => 'date',
         'tanggal_mulai_pencairan' => 'date',
         'tanggal_cair' => 'date',
+        'nominal' => 'integer',
     ];
+
+    /* =========================================================
+     * RELATIONSHIPS
+     * ========================================================= */
+
+    /**
+     * Relasi ke Siswa
+     * PIP milik 1 Siswa berdasarkan NISN
+     */
+    public function siswa()
+    {
+        return $this->belongsTo(Siswa::class, 'nisn', 'nisn');
+    }
 }

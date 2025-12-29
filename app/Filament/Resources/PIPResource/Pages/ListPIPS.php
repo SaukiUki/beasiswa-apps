@@ -7,21 +7,23 @@ use App\Imports\PIPImport;
 use Filament\Forms\Components\Select;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Filament\Resources\PIPResource;
-use Filament\Pages\Concerns\HasWidgets;
 use Illuminate\Support\Facades\Storage;
 use Filament\Notifications\Notification;
 use Filament\Forms\Components\FileUpload;
 use Filament\Resources\Pages\ListRecords;
+
+// ✅ GLOBAL WIDGETS (BENAR)
+use App\Filament\Widgets\PIPStats;
 use App\Filament\Widgets\PIPSiswaPerKabupatenChart;
 use App\Filament\Widgets\PIPSiswaPerKecamatanChart;
-use App\Filament\Resources\PIPResource\Widgets\PIPStats;
-
 
 class ListPIPS extends ListRecords
 {
-
     protected static string $resource = PIPResource::class;
 
+    /* =========================================================
+     * HEADER ACTIONS
+     * ========================================================= */
     protected function getHeaderActions(): array
     {
         return [
@@ -63,7 +65,6 @@ class ListPIPS extends ListRecords
                         ->send();
                 }),
 
-
             Actions\Action::make('Export Excel')
                 ->label('Export Excel')
                 ->icon('heroicon-o-arrow-down-tray')
@@ -87,7 +88,7 @@ class ListPIPS extends ListRecords
 
                     $fileName = 'export_pip_' . str($kabupaten)->slug() . '_' . now()->format('Ymd_His') . '.xlsx';
 
-                    return \Maatwebsite\Excel\Facades\Excel::download(
+                    return Excel::download(
                         new \App\Exports\PIPExport($kabupaten),
                         $fileName
                     );
@@ -95,7 +96,9 @@ class ListPIPS extends ListRecords
         ];
     }
 
-    // Tambahkan ini untuk menampilkan widget di atas tabel
+    /* =========================================================
+     * HEADER WIDGETS
+     * ========================================================= */
     protected function getHeaderWidgets(): array
     {
         return [

@@ -24,6 +24,8 @@ class OrangTuaResource extends Resource
     protected static ?string $label = 'Data Orang Tua';
     protected static ?string $recordTitleAttribute = 'nama_wali';
 
+
+
     public static function form(Form $form): Form
     {
         return $form
@@ -119,5 +121,10 @@ class OrangTuaResource extends Resource
             'create' => Pages\CreateOrangTua::route('/create'),
             'edit' => Pages\EditOrangTua::route('/{record}/edit'),
         ];
+    }
+
+        public static function shouldRegisterNavigation(): bool
+    {
+        return false;
     }
 }

@@ -16,6 +16,9 @@ class Pendidikan extends Model
         'kecamatan_id',
         'kelurahan_id',
         'alamat',
+        'nama_pimpinan',
+        'no_hp_pimpinan',
+        'email_instansi',
     ];
 
     public function kota()
